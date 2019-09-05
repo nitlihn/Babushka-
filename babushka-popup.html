@@ -12,6 +12,31 @@
             background-color: #b9c4ad;
         }
 
+        #splash {
+            width: 100vw;
+            height: 100vw;
+            background-image: url(img/bistro_ret.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        @media only screen and (min-width: 500px) {
+            #splash {
+                width: 100vw;
+                height: 36.25vw;
+                background-position: 40% 50%;
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            #spalsh {
+                width: 100vw;
+                height: 86.25vw;
+                background-position: 50% 50%;
+            }
+        }
+
+
         h1 {
             text-align: center;
             font-size: 3rem;
@@ -44,7 +69,7 @@
             width: 80%;
             margin: 20px;
             border: 3px solid #ebebeb;
-            filter: grayscale(45%);
+
         }
 
 
@@ -83,7 +108,6 @@
             display: flex;
             justify-content: center;
             background-color: #b9c4ad;
-            border: 1px solid white;
             margin: 10px;
 
         }
@@ -91,12 +115,48 @@
         #info p {
             margin: 30px;
             font-family: 'Roboto', sans-serif;
-            color: white;
+            color: #5c5c5c;
         }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .7);
+            display: none;
+            overflow: scroll;
+
+        }
+
+        .indhold {
+            font-family: 'Lato', sans-serif;
+            width: 38vw;
+            min-height: 40vh;
+            background-color: white;
+            margin: 4rem auto;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .luk {
+            position: fixed;
+            right: 389px;
+            top: 80px;
+            font-size: 2rem;
+            font-family: 'Lato', sans-serif;
+            border: none;
+            color: black;
+            background-color: none;
+        }
+
     </style>
 </head>
 
 <body>
+
+    <section id="splash"></section>
+
     <nav>
         <button class="filter valgt" data-kategori="alle">ALLE</button>
         <button class="filter" data-kategori="forretter">FORRETTER</button>
@@ -104,6 +164,7 @@
         <button class="filter" data-kategori="desserter">DESSERTER</button>
         <button class="filter" data-kategori="drikkevarer">DRIKKEVARER</button>
     </nav>
+
     <h1>MENU</h1>
     <template>
         <article>
@@ -113,6 +174,17 @@
             <p class="pris"></p>
         </article>
     </template>
+    <div id="popup">
+        <button class="luk">X</button>
+        <section class="indhold">
+            <article class="menu">
+                <h2></h2>
+                <img class="billede" src="" alt="">
+                <p class="menukort"></p>
+                <p class="pris"></p>
+            </article>
+        </section>
+    </div>
     <section class="liste"></section>
     <footer>
         <div id="info">
@@ -151,10 +223,13 @@
                 if (filter == "alle" || filter == retter.gsx$kategori.$t) {
                     const klon = temp.cloneNode(true).content;
                     klon.querySelector("h2").textContent = retter.gsx$navn.$t;
-                    klon.querySelector(".pris").textContent = retter.gsx$pris.$t;
+                    klon.querySelector(".pris").textContent = `${retter.gsx$pris.$t},-`;
                     klon.querySelector(".menu").textContent = retter.gsx$kort.$t;
                     klon.querySelector("img").src = `large/${retter.gsx$billede.$t}.jpg`;
                     listeRetter.appendChild(klon);
+                    listeRetter.lastElementChild.addEventListener("click", () => {
+                        visSingle(retter);
+                    });
                 }
             })
         }
@@ -174,5 +249,22 @@
             })
             start();
         }
+
+        function visSingle(retter) {
+            document.querySelector("#popup").style.display = "block";
+            document.querySelector("#popup .luk").addEventListener("click", lukSingle);
+
+            document.querySelector(".menu h2").textContent = retter.gsx$navn.$t;
+            document.querySelector(".menu .pris").textContent = `${retter.gsx$pris.$t},-`;
+            document.querySelector(".menu .menukort").textContent = retter.gsx$lang.$t;
+            document.querySelector(".menu img").src = `large/${retter.gsx$billede.$t}.jpg`;
+        }
+
+        function lukSingle() {
+            document.querySelector("#popup").style.display = "none";
+        }
+
     </script>
-</body></html>
+</body>
+
+</html>
